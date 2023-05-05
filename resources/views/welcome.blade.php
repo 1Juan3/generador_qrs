@@ -45,7 +45,7 @@
         </div>
       </div>
 
-      <div class="bd-example">
+      <div class="bd-example" style="height: 75vh">
         <table class="table table-striped table-hover">
             <thead>
           <tr>
@@ -62,7 +62,12 @@
             <td>{{ $grupo['grupo'] }}</td>
             <td>{{ $grupo['cantidad'] }}</td>
             <td><a href="{{route('visualizar', str_replace(' ', '_', $grupo['grupo'])) }}"><i class="bi bi-qr-code" style="font-size: 18px; color: black"></i></a></td> 
-            <td><i class="bi bi-trash"style="font-size: 18px; color:red;"></i></td>
+            <td><form method="POST" action="{{ route('eliminar', str_replace(' ', '_', $grupo['grupo'])) }}">
+              @csrf
+              @method('POST')
+              <button type="submit" class="btn btn-danger"><i class="bi bi-trash" style="font-size: 15px;"></i></button>
+          </form>
+          </td>
             @endforeach
           </tr>
         </tbody>

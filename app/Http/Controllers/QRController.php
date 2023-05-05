@@ -11,8 +11,12 @@ use Illuminate\Support\Facades\Artisan;
 
 class QRController extends Controller
 {
-    public function tablaDeqQr(){
-
+    public function eliminarQrPorGrupo($grupo){
+        $grupo = str_replace('_', ' ', $grupo); 
+        Token::where('nombe_grupo', $grupo)->delete();
+        session()->flash('status1', 'Lista de QRS por grupo elimnada');
+        return to_route('gruposQr');
+        
     }
     public function verQrPorGrupo(){
         $informacion = Token::select('nombe_grupo')->distinct()->get();
@@ -62,7 +66,7 @@ class QRController extends Controller
         $request->validate([
             'numero_entradas' => ['required'],
             'numero_qr' => ['required'],
-            'nombre_grupo' => ['required', 'unique:tokens,nombe_grupo']]); // validaciones de campo de parte del sevidor 
+            'nombre_grupo' => ['required']]); // validaciones de campo de parte del sevidor 
         $numero_qrs = $request->input('numero_qr'); // Numero de qrs a generar 
             for ($i = 0; $i < $numero_qrs; $i++) {
                 $token = bin2hex(random_bytes(10)); // token
@@ -75,21 +79,49 @@ class QRController extends Controller
             }
             session()->flash('status', 'Qr Generados');
 
+            return to_route('gruposQr');
+
 
     }
     public function registrar_entrada(Request $request, $datos){
-      $registro = new Registro; //creo un nueva instacia de registro o objeto 
-      $registro ->comentario = $request->input('comentario'); 
-      $registro ->id_qr = $datos; // inserto el token para guardar el registro de da topken 
-      $registro->save(); // finalizo guardando en la base de dartos 
+
       $token_ingreso = $datos; //traigo el token 
       $numero_entradas = Token::where('token', $token_ingreso)->value('numero_entradas');//utilizo el token para consultar el numero de entradas 
-      $numero_entradas-=1; // descuento el nmumero de pasadas  
+      if($numero_entradas>0){
+        $registro = new Registro; //creo un nueva instacia de registro o objeto 
+        $registro ->comentario = $request->input('comentario'); 
+        $registro ->id_qr = $datos; // inserto el token para guardar el registro de da topken 
+        $registro->save(); // finalizo guardando en la base de dartos 
+        $numero_entradas-=1; // descuento el nmumero de pasadas  
         Token::where('token', $token_ingreso)
         ->update( ['numero_entradas'=> $numero_entradas]);// Finalmente actualizo el numero de entradas eb a BD
+
+        session()->flash('status', 'Entrada Registrada');
+      }else{
+        session()->flash('status1', 'Ya se registraron todas las entradas');
+      }
+
         return view('registrar');
 
     }
+    public function consultar_informacion_entrada(Request $request){
+        $token = $request->input('token');
+        $informacion = Registro::where('id_qr', $token)->get(); 
+        $datos = [];
+        if($informacion){
+        foreach($informacion as $registro){
+            $datos[] = [
+                'comentario' => $registro->comentario,
+                'created_at' => $registro->created_at,
+                'token' => $registro->id_qr,
+            ];
+        }
+        
+        } 
+    
+        return view('viewEntradas', compact('datos'));
+    }
+    
     public function consultar_informacion(Request $request){
         $token = $request->input('token');
         $informacion = Graduando::where('id_qr', $token)->first();
@@ -104,9 +136,8 @@ class QRController extends Controller
                 'token' => $informacion->id_qr,
             ];
         } else{
-            echo('no se encontraron datos');
+           
         }
-    
         return view('registrar', compact('datos'));
     }
     
@@ -115,10 +146,4 @@ class QRController extends Controller
     public function index(){
         return view('qrcode');
     }
-    
-
-    
-    
-
-
 }
