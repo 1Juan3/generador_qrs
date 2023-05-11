@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('informacion_graduando', function (Blueprint $table) {
             $table->id(); 
-            $table->string('cedula'); 
-            $table->string('nombres');
-            $table->string('apellidos');
-            $table->string('titulo');
-            $table->string('nombre invitados');
+            $table->string('cedula')->nullable(); 
+            $table->string('nombres')->nullable();
+            $table->string('apellidos')->nullable();
+            $table->string('titulo')->nullable();
+            $table->string('nombre invitados')->nullable();
             $table->string('id_qr');
             $table->timestamps();
         });

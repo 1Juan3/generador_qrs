@@ -14,6 +14,10 @@
     <table class="table table-hover">
         <thead>
             <tr>
+                <th scope="col">Numero entrada</th>
+                <th scope="col">Nombre Estudiante</th>
+                <th scope="col">Apelido Estudiante</th>
+                <th scope="col">Cedula</th>
                 <th scope="col">Comentario</th>
                 <th scope="col">Fecha de registro</th>
                 <th scope="col">Token</th>
@@ -22,6 +26,10 @@
         <tbody>
             @foreach ($datos as $registro)
                 <tr>
+                    <td>{{ $registro['id'] }}</td>
+                    <td>{{ $registro['nombres'] }}</td>
+                    <td>{{ $registro['apellidos'] }}</td>
+                    <td>{{ $registro['cedula'] }}</td>
                     <td>{{ $registro['comentario'] }}</td>
                     <td>{{ $registro['created_at'] }}</td>
                     <td>{{ $registro['token'] }}</td>

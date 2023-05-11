@@ -9,4 +9,6 @@ class Graduando extends Model
 {
     use HasFactory;
     protected $table = 'informacion_graduando';
+    protected $fillable = ['nombres', 'apellidos', 'cedula','nombre_invitados','titulo' ];
+
 }

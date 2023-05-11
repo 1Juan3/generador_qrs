@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{$css ?? ''}}
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -12,18 +13,29 @@
   <nav style="background-color: rgb(0, 150, 63); ">
     <ul class="nav justify-content-center">
         <li class="nav-item">
-          <strong > <a class="nav-link" href="{{ route('gruposQr')}}" style="color:white">Grupos Qrs</a></strong>
+          <strong > <a class="nav-link" href="{{ route('gruposQr')}}" style="color:white">Evento con generación de QR</a></strong>
         </li>
         <li class="nav-item">
-         <strong > <a class="nav-link" href="{{ route('consultar')}}" style="color:white">Registrar entradas</a></strong>
+         <strong > <a class="nav-link" href="{{ route('consultar')}}" style="color:white">Registrar entradas al evento</a></strong>
         </li>
         <li class="nav-item">
           <strong > <a class="nav-link" href="{{ route('consutarRegistro')}}" style="color:white">Ver registro de entradas</a></strong>
          </li>
+         <li class="nav-item">
+          <strong > <a class="nav-link" href="{{ route('entrada')}}" style="color:white">Consultar entradas al evento</a></strong>
+         </li>
+         @auth
+         <li  class="nav-item">
+          <form action="{{ route('logout') }}" method="POST">
+            @csrf
+           <button  class="nav-link" type="submit" style="border:none; background-color: transparent; color:white;">  <strong >Cerrar sesión</strong ></button> 
+        </form>
+         </li>
+         @endauth
       </ul>
     </nav>
     @if (session('status'))
-    <div class="alert alert-success alert-dismissible fade show">
+    <div class="alert alert-success alert-dismissible fade show " style="text-align: center">
         {{ session('status') }}
     </div>
   @endif
