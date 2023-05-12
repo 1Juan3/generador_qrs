@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout titulo="Editar evento">
   <div class="body" style="text-align: center; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center"> 
     <h1> Editar {{$grupo->nombe_grupo}} </h1> 
     <form action="{{ route('updated', $grupo->nombe_grupo) }}" method="POST">

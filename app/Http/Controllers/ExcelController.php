@@ -28,9 +28,18 @@ class ExcelController extends Controller
 
         return view('qrtoperson');
     }
+    
+    public function index1(){
 
-    public function descargarExcel(){
-        return Excel::download( new DatosExport, 'datos-graduando.xlsx');
+        return view('qrtoperson');
     }
+
+    public function descargarExcel(Request $request)
+    {
+        $nombre_grupo = $request->input('grupo');
+        return Excel::download(new DatosExport($nombre_grupo), 'datos-graduando.xlsx');
+    }
+    
+
 
 } 

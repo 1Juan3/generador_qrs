@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout titulo="Registrar entrada">
   <form id="myForm" action="{{ route('consultar')}}" style="display: flex; justify-content: center; align-items: center"> 
     <input class="form-control" name="token" type="text"style="text-align: center; width: 20%; margin-top: 30px; margin-bottom:30px" placeholder="QR del graduando" oninput="submitForm()" >
 </form>

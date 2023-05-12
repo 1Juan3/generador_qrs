@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout titulo="Ver eventos">
     <section style="display: flex; justify-content: center; align-items: inherit">
             <strong style="width: 50%">Lista de grupos de qr</strong>
             
@@ -59,8 +59,8 @@
             <th scope="col">Fecha del evento</th>
             <th scope="col">Cantidad de graduandos</th>
             <th scope="col">Visualizar</th>
-            <th scope="col">Eliminar grupo</th>
-            <th scope="col">Editar Grupo</th>
+            <th scope="col">Eliminar evento</th>
+            <th scope="col">Editar evento</th>
           </tr>
         </thead>
         <tbody>

@@ -1,8 +1,8 @@
-<x-layout>  
+<x-layout titulo="Ver aforo">  
     <section style="display: flex; justify-content: center; align-items: center; margin-top:60px  ">
             <form action="{{ route('entrada')}}">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" placeholder="Numero de entras por Qr" name="nombre_grupo" style="width: 200px;">
+                    <input type="text" class="form-control" placeholder="Nombre Grupo" name="nombre_grupo" style="width: 200px;">
                     <label>Nombre del evento</label>
                 </div> 
                 <button> Consultar </button>

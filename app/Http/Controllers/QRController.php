@@ -72,6 +72,7 @@ public function storage(Request  $request)
         for ($i = 0; $i < $numero_qrs; $i++) {
             $token = bin2hex(random_bytes(10)); // token
                 $graduando = New Graduando;
+                $graduando ->nombre_grupo = $request->input('nombre_grupo');
                 $graduando->id_qr = $token;
                 $graduando->save();
                 $qr = New Token;
@@ -112,6 +113,8 @@ public function storage(Request  $request)
     }
     
     Token::where('nombe_grupo', $grupo)->delete();
+    Graduando::where('nombre_grupo', $grupo)->delete();
+    Registro::where('nombre_grupo', $grupo)->delete();
     session()->flash('status1', 'Lista de QRS por grupo eliminada');
     return redirect()->route('gruposQr');
 }

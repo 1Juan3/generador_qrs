@@ -71,7 +71,8 @@ Route::get('/view', [App\Http\Controllers\QRController::class,'consultar_entrada
 Route::post('/view', [App\Http\Controllers\QRController::class,'consultar_entrada'])->name('entrada');
 Route::get('/subir-excel', [App\Http\Controllers\ExcelController::class,'index'])->name('subir-excel');
 Route::post('/subir-excel', [App\Http\Controllers\ExcelController::class,'subirExcel'])->name('subir-excel');
-Route::get('/descargar-excel', [App\Http\Controllers\ExcelController::class,'descargarExcel'])->name('descargar-excel');
+Route::get('/descargar-excel1', [App\Http\Controllers\ExcelController::class,'index1'])->name('descargar-excel1');
+Route::post('/descargar-excel', [App\Http\Controllers\ExcelController::class,'descargarExcel'])->name('descargar-excel');
 
 
 

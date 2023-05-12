@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout titulo="visualizar">
     <h1 style="text-align: center">Qrs del grupo {{$grupo}}</h1>
     <div style="display: flex; flex-wrap: wrap; justify-content: center; width: 100%; ">
         @foreach ($rutaImagenes as $rutaImagen)
