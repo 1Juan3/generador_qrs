@@ -1,5 +1,5 @@
 
-<x-layout>
+<x-layout titulo="login">
   <x-slot name="css"><link rel="stylesheet" href="{{ asset('css/login.css') }}"> <x-slot>
     <div class="body">
         <h1>

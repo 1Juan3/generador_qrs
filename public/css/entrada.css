@@ -1,0 +1,8 @@
+
+
+h1{
+    background: -webkit-linear-gradient(rgba(0, 209, 87, 0.075),rgb(0, 150, 63));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: green;  
+}

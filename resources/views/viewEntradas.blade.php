@@ -1,7 +1,7 @@
 
 <x-layout titulo="Registro de entradas">
         <form id="myForm" action="{{ route('consutarRegistro')}}" style="display: flex; justify-content: center; align-items: center"> 
-          <input class="form-control" name="token" type="text"style="text-align: center; width: 20%; margin-bottom:20px" placeholder="QR del graduando" oninput="submitForm()" >
+          <input class="form-control" name="valor" type="text"style="text-align: center; width: 20%; margin-bottom:20px" placeholder="QR del graduando" oninput="submitForm()" >
       </form>
       
       {{-- Este script me permitira leer automaticamente el codigo --}}
@@ -10,11 +10,12 @@
             document.getElementById("myForm").submit();
           }
         </script>
+        <p><strong>Total de entradas = {{ $total }}</strong></p>
 <div class="bd-example" style="height: 75vh">
     <table class="table table-hover">
         <thead>
             <tr>
-                <th scope="col">Numero entrada</th>
+
                 <th scope="col">Nombre Estudiante</th>
                 <th scope="col">Apelido Estudiante</th>
                 <th scope="col">Cedula</th>
@@ -26,7 +27,7 @@
         <tbody>
             @foreach ($datos as $registro)
                 <tr>
-                    <td>{{ $registro['id'] }}</td>
+
                     <td>{{ $registro['nombres'] }}</td>
                     <td>{{ $registro['apellidos'] }}</td>
                     <td>{{ $registro['cedula'] }}</td>

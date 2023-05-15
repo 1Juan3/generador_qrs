@@ -62,6 +62,7 @@ Route::patch('actualizar/{grupo}', [App\Http\Controllers\QRController::class, 'u
 Route::get('/verGrupos',[App\Http\Controllers\QRController::class,'verQrPorGrupo'])->name('gruposQr');
 Route::post('/verGrupos',[App\Http\Controllers\QRController::class,'storage'])->name('create');
 Route::get('/viewQrs/{grupo}',[App\Http\Controllers\QRController::class,'generateQr'])->name('visualizar');
+Route::get('/viewQrs/{grupo}/{qr}',[App\Http\Controllers\QRController::class,'generateQrIndividual'])->name('visualizar1');
 Route::get('/verRegistro',[App\Http\Controllers\QRController::class,'consultar_informacion_entrada'])->name('consutarRegistro');
 Route::post('/verRegistro',[App\Http\Controllers\QRController::class,'consultar_informacion_entrada'])->name('consutarRegistro');
 Route::get('/registrarEntrada',[App\Http\Controllers\QRController::class,'consultar_informacion'])->name('consultar');

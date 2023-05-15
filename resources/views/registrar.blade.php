@@ -1,4 +1,5 @@
 <x-layout titulo="Registrar entrada">
+  <x-slot name="css"><link rel="stylesheet" href="{{ asset('css/entrada.css') }}"> <x-slot>
   <form id="myForm" action="{{ route('consultar')}}" style="display: flex; justify-content: center; align-items: center"> 
     <input class="form-control" name="token" type="text"style="text-align: center; width: 20%; margin-top: 30px; margin-bottom:30px" placeholder="QR del graduando" oninput="submitForm()" >
 </form>
@@ -14,15 +15,10 @@
       <div class="card-header">
         Informacion del graduando
       </div>
-      <h1 style="font-size: 30px; text-align: center; margin-top: 30px;  ">INVITADO ESPECIAL DE:</h1>
-      <div class="card-body" style="display: flex; justify-content: center; align-items: center; flex-direction: column">
-        <label for="Nombres"> <Strong>Nombres</Strong></label>
-        @if(isset($datos['nombres']))
-        <p class="card-text" id="nombres">{{ $datos['nombres'] }}</p>
-        @endif
-        <label for="Apellido"> <Strong>Apellidos</Strong></label>
-        @if(isset($datos['apellidos']))
-        <p class="card-text" id="apellidos">{{ $datos['apellidos'] }}</p>
+      <p style="font-size: 25px; text-align: center; margin-top: 40px;  ">INVITADO ESPECIAL DE:</p>
+      <div class="card-body" style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        @if(isset($datos['nombres']) && $datos['apellidos'])
+        <h1 >{{ $datos['nombres'] }} {{$datos['apellidos']}}</h1>
         @endif
         <label for="Titulo"> <Strong>Titulo</Strong></label>
         @if(isset($datos['titulo']))

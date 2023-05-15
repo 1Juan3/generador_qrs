@@ -19,20 +19,28 @@ class QRController extends Controller
     $grupo = str_replace('_', ' ', $grupo); // Nombre del grupo que deseas mostrar
     $informacion = Token::where('nombe_grupo', $grupo)->get();
     $rutaImagenes = [];
-    
+    $qrs =[];
     foreach ($informacion as $registro) {
-        $token = $registro->token;
-        $rutaImagen = 'svg-qrs/codigo-qr-' . str_replace(' ', '-', strtolower($token)) . '.svg'; // Genera una ruta única para cada imagen
-        $rutaImagenes[] = $rutaImagen;
+        $qr = $registro->token;
+        $rutaImagen = 'svg-qrs/codigo-qr-' . str_replace(' ', '-', strtolower($qr)) . '.svg'; // Genera una ruta única para cada imagen
+        $qrs[] = $qr;
     
+        $rutaImagenes[] = $rutaImagen;
         QrCode::format('svg')
             ->style('round')
             ->size(200)
             ->errorCorrection('H')
-            ->generate($token, public_path($rutaImagen));
+            ->generate($qr, public_path($rutaImagen));
     }
+    return view('viewqr', ['rutaImagenes' => $rutaImagenes, 'grupo' => $grupo, 'qrs'=>$qrs]);
     
-    return view('viewqr', ['rutaImagenes' => $rutaImagenes, 'grupo' => $grupo]);
+}
+    // controller para generar los grupos con  qr 
+    public function generateQrIndividual($grupo ,$qr)
+{   $rutaImagen = 'svg-qrs/codigo-qr-' . str_replace(' ', '-', strtolower($qr)) . '.svg';
+    $grupo = str_replace('_', ' ', $grupo); // Nombre del grupo que deseas mostrar
+
+    return view('viewqr1', ['rutaImagen' => $rutaImagen]);
     
 }
 
@@ -71,9 +79,11 @@ public function storage(Request  $request)
     $numero_qrs = $request->input('numero_qr'); // Numero de qrs a generar 
         for ($i = 0; $i < $numero_qrs; $i++) {
             $token = bin2hex(random_bytes(10)); // token
+                $rutaImagen = 'https://grados.ugca.edu.co/viewQrs/Grupo_1/' . str_replace(' ', '-', strtolower($token));
                 $graduando = New Graduando;
                 $graduando ->nombre_grupo = $request->input('nombre_grupo');
                 $graduando->id_qr = $token;
+                $graduando->url_token = $rutaImagen;
                 $graduando->save();
                 $qr = New Token;
                 $qr->numero_entradas = $request->input('numero_entradas'); //numero de entradas que va a tener cada qr
@@ -118,7 +128,29 @@ public function storage(Request  $request)
     session()->flash('status1', 'Lista de QRS por grupo eliminada');
     return redirect()->route('gruposQr');
 }
+public function registrar_entrada(Request $request, $datos){
 
+    $token_ingreso = $datos; //traigo el token 
+    $numero_entradas = Token::where('token', $token_ingreso)->value('numero_entradas');
+    $grupo = Token::where('token', $token_ingreso)->value('nombe_grupo');//utilizo el token para consultar el numero de entradas 
+    if($numero_entradas>0){
+      $registro = new Registro; //creo un nueva instacia de registro o objeto 
+      $registro ->comentario = $request->input('comentario'); 
+      $registro -> nombre_grupo = $grupo;
+      $registro ->id_qr = $datos; // inserto el token para guardar el registro de da topken 
+      $registro->save(); // finalizo guardando en la base de dartos 
+      $numero_entradas-=1; // descuento el nmumero de pasadas  
+      Token::where('token', $token_ingreso)
+      ->update( ['numero_entradas'=> $numero_entradas]);// Finalmente actualizo el numero de entradas eb a BD
+
+      session()->flash('status', 'Entrada Registrada');
+    }else{
+      session()->flash('status1', 'Ya se registraron todas las entradas');
+    }
+
+      return view('registrar');
+
+  }
 
     // controller para consulatr la informacion del graduandi
     public function consultar_informacion(Request $request){
@@ -143,61 +175,38 @@ public function storage(Request  $request)
         }
         return view('registrar', compact('datos'));
     }
-    
-    //controller parqa registrar la entrada
-    public function registrar_entrada(Request $request, $datos){
-
-      $token_ingreso = $datos; //traigo el token 
-      $numero_entradas = Token::where('token', $token_ingreso)->value('numero_entradas');//utilizo el token para consultar el numero de entradas 
-      $nombe_grupo = Token::where('token', $token_ingreso)->value('nombe_grupo');
-
-
-      if($numero_entradas>0){
-        $registro = new Registro; //creo un nueva instacia de registro o objeto 
-        $registro ->comentario = $request->input('comentario'); 
-        $registro ->nombre_grupo = $nombe_grupo;
-        $registro ->id_qr = $datos; // inserto el token para guardar el registro de da topken 
-        $registro->save(); // finalizo guardando en la base de dartos 
-        $numero_entradas-=1; // descuento el nmumero de pasadas  
-        Token::where('token', $token_ingreso)
-        ->update( ['numero_entradas'=> $numero_entradas]);// Finalmente actualizo el numero de entradas eb a BD
-
-        session()->flash('status', 'Entrada Registrada');
-      }else{
-        session()->flash('status1', 'Ya se registraron todas las entradas');
-      }
-
-        return view('registrar');
-
+// Controller para consultar la información de la entrada
+public function consultar_informacion_entrada(Request $request)
+{
+    $valor = $request->input('valor');
+    $token = Graduando::where('cedula', $valor)->value('id_qr');
+    if($token != null ){
+        $valor =$token;
     }
-    
-
-    //controeller para consultar la informacion de la entrada
-    public function consultar_informacion_entrada(Request $request){
-        $token = $request->input('token');
-        $informacion1 = Registro::where('id_qr', $token)->get(); 
-
     $informacion = Graduando::join('registro_entrada', 'informacion_graduando.id_qr', '=', 'registro_entrada.id_qr')
-    ->where('informacion_graduando.id_qr', '=', $token)
-    ->get();
-        $datos = [];
-        if($informacion){
-        foreach($informacion as $registro){
+        ->where('informacion_graduando.id_qr', '=', $valor)
+        ->get();
+
+    $total_entradas = Registro::where('id_qr', $valor)->count();
+
+    $datos = [];
+    if ($informacion) {
+        foreach ($informacion as $registro) {
             $datos[] = [
-                'id'=> $registro ->id,
+                'id' => $registro->id,
                 'comentario' => $registro->comentario,
                 'created_at' => $registro->created_at,
                 'token' => $registro->id_qr,
-                'cedula'=> $registro->cedula,
-                'nombres'=>$registro->nombres,
-                'apellidos'=>$registro->apellidos
+                'cedula' => $registro->cedula,
+                'nombres' => $registro->nombres,
+                'apellidos' => $registro->apellidos,
             ];
         }
-        
-        } 
-    
-        return view('viewEntradas', compact('datos'));
     }
+
+    return view('viewEntradas', compact('datos'), ['total' => $total_entradas]);
+}
+
     public function editQrCount(Request $request, $grupo){
         $grupo = str_replace('_', ' ', $grupo); // Nombre del grupo que deseas actualizar
         $informacion =  Token::where('nombe_grupo', $grupo)->first();
