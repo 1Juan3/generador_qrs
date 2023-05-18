@@ -46,15 +46,12 @@ class QRController extends Controller
 
     //Controller para mostrar los grupos por qr 
     public function verQrPorGrupo(){
-        $informacion = Token::select('nombe_grupo')
+        $informacion = Token::select('nombe_grupo', 'fecha')
         ->distinct()
         ->get();
-
-    
-
-        
         $grupos = [];
-       
+
+
         // Obtener la cantidad de datos por grupo
         foreach ($informacion as $grupo) {
             $cantidad = Token::where('nombe_grupo', $grupo->nombe_grupo)->count();
@@ -69,37 +66,49 @@ class QRController extends Controller
     }
 
     //Controller para guardar los qr en la base de datos 
-public function storage(Request  $request)
-{
- 
-    $request->validate([
-        'numero_entradas' => ['required'],
-        'numero_qr' => ['required'],
-        'nombre_grupo' => ['required']]); // validaciones de campo de parte del sevidor 
-    $numero_qrs = $request->input('numero_qr'); // Numero de qrs a generar 
-        for ($i = 0; $i < $numero_qrs; $i++) {
-            $token = bin2hex(random_bytes(10)); // token
-                $rutaImagen = 'https://grados.ugca.edu.co/viewQrs/Grupo_1/' . str_replace(' ', '-', strtolower($token));
-                $graduando = New Graduando;
-                $graduando ->nombre_grupo = $request->input('nombre_grupo');
+    public function storage(Request $request)
+    {
+        $request->validate([
+            'numero_entradas' => ['required'],
+            'numero_qr' => ['required'],
+            'nombre_grupo' => ['required']
+        ]); // Validaciones de campo por parte del servidor
+    
+        $nombre_grupo = $request->input('nombre_grupo');
+        $informacion = Token::select('nombe_grupo')
+            ->where('nombe_grupo', '=', $nombre_grupo)
+            ->first();
+    
+        if ($informacion && $nombre_grupo === $informacion->nombre_grupo) {
+            return redirect('/verGrupos')->with('status1', 'No se puede crear un grupo con el mismo nombre');
+        } else {
+            $numero_qrs = $request->input('numero_qr'); // Número de QRs a generar
+    
+            for ($i = 0; $i < $numero_qrs; $i++) {
+                $token = bin2hex(random_bytes(10)); // Generar un token
+                $qr = new Token;
+                $qr->numero_entradas = $request->input('numero_entradas'); // Número de entradas que tendrá cada QR
+                $qr->nombe_grupo = $request->input('nombre_grupo'); // Grupo al que pertenece cada QR
+                $qr->fecha = $request->input('fecha');
+                $qr->token = $token;
+                $qr->save(); // Guardar en la base de datos
+    
+                $graduando = new Graduando;
+                $graduando->nombre_grupo = $request->input('nombre_grupo');
                 $graduando->id_qr = $token;
+                $nombre_grupo = $request->input('nombre_grupo');
+                $nombre = str_replace(' ', '_', $nombre_grupo);
+                $rutaImagen = "https://grados.ugca.edu.co/viewQrs/{$nombre}/" . str_replace(' ', '-', strtolower($token));
                 $graduando->url_token = $rutaImagen;
                 $graduando->save();
-                $qr = New Token;
-                $qr->numero_entradas = $request->input('numero_entradas'); //numero de entradas que va a tener cada qr
-                $qr->nombe_grupo = $request->input('nombre_grupo'); // el grupo al que pertenece cada qr
-                $qr->fecha= $request->input('fecha');
-                $qr ->token = $token;
-                $qr->save(); // gardar en la base de datos 
-                
+            }
+    
+            session()->flash('status', 'QRs generados');
         }
-        session()->flash('status', 'Qr Generados');
-
-
-        return to_route('gruposQr');
-
-}
-
+    
+        return redirect()->route('gruposQr');
+    }
+    
     //Controller para cerrar session  
     public function logout(Request $request)
     {
@@ -168,7 +177,8 @@ public function registrar_entrada(Request $request, $datos){
                 'titulo' => $informacion->titulo,
                 'nombre_invitados' => $informacion->nombre_invitados,
                 'token' => $informacion->id_qr,
-                'numero_entradas' =>$numero_entradas
+                'numero_entradas' =>$numero_entradas,
+                'nombre_grupo' =>$nombre_grupo
             ];
         } else{
            

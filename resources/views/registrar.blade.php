@@ -20,17 +20,21 @@
         @if(isset($datos['nombres']) && $datos['apellidos'])
         <h1 >{{ $datos['nombres'] }} {{$datos['apellidos']}}</h1>
         @endif
-        <label for="Titulo"> <Strong>Titulo</Strong></label>
+        <label for="Titulo"> <b>Titulo</b></label>
         @if(isset($datos['titulo']))
         <p class="card-text" id="titulo">{{ $datos['titulo'] }}</p>
         @endif
-        <label for="Invitados"> <Strong>Invitados</Strong></label>
+        <label for="Invitados"> <b>Invitados</b></label>
         @if(isset($datos['nombre_invitados']))
         <p class="card-text" id="nombre_invitados">{{ $datos['nombre_invitados'] }}</p>
         @endif
-        <label for="numero_entradas"> <Strong>Numero entradas disponibles</Strong></label>
+        <label for="numero_entradas"> <b>Numero entradas disponibles</b></label>
         @if(isset($datos['numero_entradas']))
         <p class="card-text" id="numero_entradas">{{ $datos['numero_entradas'] }}</p>
+        @endif
+        <label for="numero_entradas"> <b>Nombre de la ceremonia</b></label>
+        @if(isset($datos['nombre_grupo']))
+        <p class="card-text" id="numero_entradas">{{ $datos['nombre_grupo'] }}</p>
         @endif
         @if(isset($datos['token']))
         <form action="{{ route('registrar', $datos['token'])}}" method="POST" >

@@ -67,7 +67,7 @@
           @foreach($grupos as $grupo)
           <tr>
             <td>{{ $grupo['grupo'] }}</td>
-            <td>{{ date('d/m/Y ', $grupo['fecha']) }}</td>
+            <td>{{  $grupo['fecha'] }}</td>
             <td>{{ $grupo['cantidad'] }}</td>
             <td><a href="{{route('visualizar', str_replace(' ', '_', $grupo['grupo'])) }}"><i class="bi bi-qr-code" style="font-size: 18px; color: black"></i></a></td> 
             <td><form method="POST" action="{{ route('eliminar', str_replace(' ', '_', $grupo['grupo'])) }}">
