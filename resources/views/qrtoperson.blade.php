@@ -13,6 +13,7 @@
                 <input type="text" class="form-control" placeholder="Nombre Grupo" name="grupo" style="width: 200px;">
                 <label>Nombre del evento</label>
             </div> 
+            
             <button class="btn btn-outline-info" href="{{ route('descargar-excel') }}">descargar información</button>
         </form>
     </section>
