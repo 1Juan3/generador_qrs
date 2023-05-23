@@ -247,6 +247,7 @@ public function consultar_informacion_entrada(Request $request)
                 $qr->nombe_grupo = $grupo;
                 $qr->token = $token;
                 $qr->save();
+                
             }
         }
         // Redireccionar de vuelta a la página de grupos QR
